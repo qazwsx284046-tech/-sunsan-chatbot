@@ -19,7 +19,7 @@ else:
 
 # CSV 설교 데이터 로드
 @st.cache_data
-def load_data():
+def load_data():sunsan_data.csv
     return pd.read_csv("설교추천100 - 시트1.csv")
 
 try:
