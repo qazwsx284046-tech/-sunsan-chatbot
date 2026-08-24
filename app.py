@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import google.generativeai as genai
 
-# Page Config 오류 방지 구문
+# Page Config 설정
 try:
     st.set_page_config(page_title="인천성산교회 영적 신앙 가이드", icon="⛪")
 except Exception:
@@ -12,22 +12,20 @@ st.title("⛪ 인천성산교회 영적 신앙 가이드 챗봇")
 
 # API 키 설정
 if "GEMINI_API_KEY" in st.secrets:
-    api_key = st.secrets["AIzaSyDm5kn8ggGuGh6LAIr2BH80K5hwKA5DDNk"]
+    api_key = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=api_key)
 else:
     st.error("Secrets에 'GEMINI_API_KEY'가 설정되지 않았습니다.")
 
-# CSV 설교 데이터 로드#
+# CSV 설교 데이터 로드
 @st.cache_data
 def load_data():
     return pd.read_csv("sunsan_data.csv")
 
-@st.c
-
 try:
     df = load_data()
 except Exception as e:
-    st.error("sunsan_data.csv")
+    st.error("sunsan_data.csv 파일을 찾을 수 없습니다. GitHub 파일명을 확인해주세요.")
     df = pd.DataFrame()
 
 # 대화 기록 초기화
@@ -73,3 +71,4 @@ if user_input := st.chat_input("답변이나 신앙 고민을 입력해주세요
 
     st.session_state.messages.append({"role": "assistant", "content": bot_reply})
     st.chat_message("assistant").write(bot_reply)
+
