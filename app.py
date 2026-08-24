@@ -17,10 +17,12 @@ if "GEMINI_API_KEY" in st.secrets:
 else:
     st.error("Secrets에 'GEMINI_API_KEY'가 설정되지 않았습니다.")
 
-# CSV 설교 데이터 로드
+# CSV 설교 데이터 로드#
 @st.cache_data
-def load_data():sunsan_data.csv
-    return pd.read_csv("설교추천100 - 시트1.csv")
+def load_data():
+    return pd.read_csv("sunsan_data.csv")
+
+@st.c
 
 try:
     df = load_data()
