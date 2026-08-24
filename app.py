@@ -12,7 +12,7 @@ st.title("⛪ 인천성산교회 영적 신앙 가이드 챗봇")
 
 # API 키 설정
 if "GEMINI_API_KEY" in st.secrets:
-    api_key = st.secrets["GEMINI_API_KEY"]
+    api_key = st.secrets["AIzaSyDm5kn8ggGuGh6LAIr2BH80K5hwKA5DDNk"]
     genai.configure(api_key=api_key)
 else:
     st.error("Secrets에 'GEMINI_API_KEY'가 설정되지 않았습니다.")
@@ -27,7 +27,7 @@ def load_data():
 try:
     df = load_data()
 except Exception as e:
-    st.error("설교 데이터베이스(CSV) 파일을 읽지 못했습니다. GitHub 파일명을 확인해주세요.")
+    st.error("sunsan_data.csv")
     df = pd.DataFrame()
 
 # 대화 기록 초기화
