@@ -58,7 +58,7 @@ if user_input := st.chat_input("답변이나 신앙 고민을 입력해주세요
     """
 
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-3.6-flash")
         response = model.generate_content(prompt)
         
         if response and hasattr(response, 'text'):
