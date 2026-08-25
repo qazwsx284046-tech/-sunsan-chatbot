@@ -14,7 +14,7 @@ GOOGLE_FORM_URL = (
 # Page Config 설정
 try:
     st.set_page_config(
-        page_title="인천성산교회 영적 신앙 가이드",
+        page_title="",
         page_icon="⛪",
         layout="centered",
     )
