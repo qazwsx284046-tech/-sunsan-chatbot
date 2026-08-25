@@ -8,7 +8,7 @@ import streamlit as st
 # src="..." 안의 주소만 복사하여 아래에 붙여넣어 주세요.
 # ==========================================
 GOOGLE_FORM_URL = (
-    "https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true"
+    "https://docs.google.com/forms/d/14TkkJdTkB7t_BpgTMuJDFSk6F0GK4tcSkbZLuRVN08s/edit#settings"
 )
 
 # Page Config 설정
