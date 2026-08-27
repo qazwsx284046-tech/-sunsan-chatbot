@@ -72,10 +72,10 @@ if user_input := st.chat_input("성도님의 고민이나 마음 상태를 적�
     """
 
     try:
-        # 에러 방지를 위한 표준 모델명 사용
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        # 최신 안정화 모델인 gemini-2.0-flash 사용
+        model = genai.GenerativeModel("gemini-2.0-flash")
         response = model.generate_content(prompt)
-        
+
         if response and hasattr(response, "text"):
             bot_reply = response.text
         else:
