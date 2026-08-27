@@ -46,8 +46,10 @@ for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
 # 사용자 입력 받기 및 AI 답변 처리
-if user_input := st.chat_input("성도님의 고민이나 기도 제목을 적어주세요..."):
-    st.session_state.messages.append({"role": "user", "content": user_content := user_input})
+user_input = st.chat_input("성도님의 고민이나 기도 제목을 적어주세요...")
+
+if user_input:
+    st.session_state.messages.append({"role": "user", "content": user_input})
     st.chat_message("user").write(user_input)
 
     # 인천성산교회 타미드 노트 & 성경 파노라마 맞춤 프롬프트
