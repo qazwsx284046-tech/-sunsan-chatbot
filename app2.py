@@ -72,13 +72,15 @@ if user_input := st.chat_input("성도님의 고민이나 마음 상태를 적�
     """
 
     try:
+        # 에러 방지를 위한 표준 모델명 사용
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(prompt)
-        bot_reply = (
-            response.text
-            if response and hasattr(response, "text")
-            else "답변을 생성하지 못했습니다. 다시 입력해주세요."
-        )
+        
+        if response and hasattr(response, "text"):
+            bot_reply = response.text
+        else:
+            bot_reply = "답변을 생성하지 못했습니다. 다시 입력해주세요."
+
     except Exception as e:
         bot_reply = f"API 오류가 발생했습니다: {str(e)}"
 
