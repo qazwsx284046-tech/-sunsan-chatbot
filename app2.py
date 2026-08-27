@@ -72,8 +72,8 @@ if user_input := st.chat_input("성도님의 고민이나 마음 상태를 적�
     """
 
     try:
-        # 최신 안정화 모델인 gemini-2.0-flash 사용
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        # 최신 권장 모델인 gemini-3.6-flash 사용
+        model = genai.GenerativeModel("gemini-3.6-flash")
         response = model.generate_content(prompt)
 
         if response and hasattr(response, "text"):
