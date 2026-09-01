@@ -29,6 +29,12 @@ else:
     )
 
 # ---------------------------------------------------------
+# 데이터 저장소 초기화 (앱 실행 동안 일기가 계속 저장됩니다)
+# ---------------------------------------------------------
+if "journal_history" not in st.session_state:
+    st.session_state.journal_history = []
+
+# ---------------------------------------------------------
 # 1. 기본 정보 & 컨디션
 # ---------------------------------------------------------
 st.subheader("📌 1. 기본 정보 & 컨디션")
@@ -116,9 +122,9 @@ tomorrow_goal = st.text_input(
 st.markdown("---")
 
 # ---------------------------------------------------------
-# 5. 제출 및 AI 성경파노라마 코칭 리포트
+# 5. 제출 및 저장 + AI 성경파노라마 코칭 리포트
 # ---------------------------------------------------------
-if st.button("🌿 오늘 일기 제출 & 성경파노라마 코칭 받기"):
+if st.button("🌿 오늘 일기 제출 & 성경파노라마 코칭 저장 받기"):
     # 입력 데이터 정리
     routines_done = []
     if r_water_morning:
@@ -147,12 +153,7 @@ if st.button("🌿 오늘 일기 제출 & 성경파노라마 코칭 받기"):
     [내일의 한가지 목표]: {tomorrow_goal}
     """
 
-    st.success("오늘의 루틴 일기가 성공적으로 기록되었습니다! 👏")
-    st.text_area(
-        "📋 오늘 작성한 일기 요약본", journal_summary, height=180
-    )
-
-    # AI 피드백 생성 (오직 창세기~요한계시록 성경파노라마 맥락 기준)
+    # AI 피드백 생성
     prompt = f"""
     너는 오직 [창세기부터 요한계시록까지의 성경파노라마 구속사 맥락]에 입각하여 성도를 코칭하는 AI 영성 라이프 코치야.
     성도가 작성한 오늘의 일기와 말씀 메모를 오직 성경 파노라마의 맥락으로만 분석하여 코칭 리포트를 작성해줘.
@@ -169,7 +170,7 @@ if st.button("🌿 오늘 일기 제출 & 성경파노라마 코칭 받기"):
        - 성도가 붙든 말씀과 일맥상통하는 구약/신약 성경파노라마 맥락의 연결 성경 구절 1~2개(권/장/절 및 본문 전체)를 엄선하여 제시해줘.
 
     3. 🌿 **성경파노라마 기반 영적 코칭**
-       - 오늘 성도가 겪은 컨디션, 건강 루틴, 회고 내용(잘된 점/아쉬운 점)을 오직 구속사적 성경파노라마의 관점(예: 광야의 훈련, 성육신의 은혜, 하나님 나라의 소망 등)으로 해석하고, 승리할 수 있는 영적 코칭을 제공해줘.
+       - 오늘 성도가 겪은 컨디션, 건강 루틴, 회고 내용(잘된 점/아쉬운 점)을 오직 구속사적 성경파노라마의 관점으로 해석하고, 승리할 수 있는 영적 코칭을 제공해줘.
 
     4. 🕊️ **구속사적 축복과 선포 (2~3줄)**
        - 하나님의 언약과 완성을 바라보는 구속사적 선포와 축복의 기도문으로 마무리해줘.
@@ -181,11 +182,47 @@ if st.button("🌿 오늘 일기 제출 & 성경파노라마 코칭 받기"):
         try:
             model = genai.GenerativeModel("gemini-3.6-flash")
             response = model.generate_content(prompt)
+            ai_reply = (
+                response.text
+                if response and hasattr(response, "text")
+                else "피드백 생성 실패"
+            )
 
-            st.markdown("### 💌 성경파노라마 AI 영성 코칭 리포트")
-            if response and hasattr(response, "text"):
-                st.info(response.text)
-            else:
-                st.error("피드백을 생성하지 못했습니다.")
+            # 앱 메모리에 일기 및 AI 피드백 자동 저장
+            new_entry = {
+                "date": str(today_date),
+                "verse": bible_verse,
+                "summary": journal_summary,
+                "feedback": ai_reply,
+            }
+            st.session_state.journal_history.append(new_entry)
+
+            st.success("🎉 오늘의 일기가 성공적으로 저장되었습니다!")
+
         except Exception as e:
             st.error(f"오류가 발생했습니다: {str(e)}")
+
+# ---------------------------------------------------------
+# 6. 저장된 일기 목록 확인하기 (하단 보관함)
+# ---------------------------------------------------------
+st.markdown("---")
+st.subheader("📚 내가 기록한 일기 보관함")
+
+if st.session_state.journal_history:
+    # 가장 최근에 작성한 일기부터 표시
+    for idx, entry in enumerate(reversed(st.session_state.journal_history)):
+        with st.expander(
+            f"🗓️ {entry['date']} - {entry['verse'] if entry['verse'] else '오늘의 일기'}"
+        ):
+            st.text_area(
+                "📋 작성한 내용 요약",
+                entry["summary"],
+                height=150,
+                key=f"sum_{idx}",
+            )
+            st.markdown("### 💌 성경파노라마 AI 영성 코칭 리포트")
+            st.info(entry["feedback"])
+else:
+    st.caption(
+        "아직 저장된 일기가 없습니다. 위에서 일기를 작성하고 제출해 보세요!"
+    )
